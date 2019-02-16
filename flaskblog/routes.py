@@ -158,8 +158,11 @@ def search():
         page = request.args.get('page', 1, type=int)
         posts1 = Post.query.filter(Post.content.like('%' + searchword + '%'))
         posts2 = Post.query.filter(Post.title.like('%' + searchword + '%'))
-        posts = posts1.union(posts2)
-        posts = posts.paginate(page=page, per_page=2)
+        posts3 = posts1.union(posts2)
+        users = User.query.filter(User.username.like('%' + searchword + '%')).first()
+        posts = Post.query.filter_by(author=users)
+        posts = posts.union(posts3)
+        posts = posts.paginate(page=page, per_page=5)
         return render_template('home.html',posts=posts)
 
 
